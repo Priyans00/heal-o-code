@@ -1,0 +1,19 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "supa.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "supa.py"
+        }
+    ],
+    "env": {
+        "FLASK_ENV": "production",
+        "VERCEL_ENV": "production"
+    }
+}
