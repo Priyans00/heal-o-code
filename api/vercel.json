@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "supa.py",
+            "src": "api/supa.py",
             "use": "@vercel/python"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "supa.py"
+            "dest": "api/supa.py"
         }
     ],
     "env": {
