@@ -19,6 +19,26 @@ def get_db_connection():
     supabase: Client = create_client(url, key)
     return supabase
 
+def handle_update(srn, column):
+    supabase = get_db_connection()
+    data2 = supabase.table('participant').select(column).eq('srn',srn).execute()
+    if data2.data and data2.data[0].get(column) is not None :
+        return {"srn":srn, "status":"has already done", "response":data2.data}
+    else :
+        try :
+            response = supabase.table('participant').update({column:"done"}).eq("srn",srn).execute()
+            return {"status":"done","response":response}
+        except Exception as e:
+            return {"status":"error","error":str(e)}
+
+def show_all_data():
+    try :
+        supabase = get_db_connection()
+        data2 = supabase.table('participant').select('*').execute()
+        return {"status":"done",'data':data2.data}
+    except Exception as e :
+        return {"status":"error","error":str(e)}
+    
 @app.route('/')
 def hello():
     return {"status":"its working"}
@@ -26,70 +46,35 @@ def hello():
 # ENTRY
 @app.route('/entry', methods = ['GET','POST'])
 def entry():
-    supabase = get_db_connection()
     data = request.json
     srn = data.get('srn')
-    data2 = supabase.table('participant').select("entry").eq("srn",srn).execute()
-    if data2.data and data2.data[0].get("entry") is not None :
-        return {"srn":srn , "status": "has already entered", "response ":data2.data}
-    else :
-        try:
-            response = supabase.table('participant').update({'entry':"done"}).eq("srn",srn).execute()
-            return {"status":"done","response":response}
-        except Exception as e:
-            return {"status":"error","error":str(e)}
+    return handle_update(srn,"entry")
 
 # DINNER
 @app.route('/dinner', methods = ['GET','POST'])
 def dinner():
-    supabase = get_db_connection()
     data = request.json
     srn = data.get('srn')
-    data2 = supabase.table('participant').select("dinner").eq("srn",srn).execute()
-    
-    if data2.data and data2.data[0].get("dinner") is not None:
-        return {"srn":srn , "status": "has already done dinner", "response ":data2.data}
-    else :
-        try:
-            response = supabase.table('participant').update({'dinner':"done"}).eq("srn",srn).execute()
-            return {"status":"done","response":response}
-        except Exception as e:
-            return {"status":"error","error":str(e)}
-
+    return handle_update(srn,"dinner")
 
 # SNACKS
 @app.route('/snacks', methods = ['GET','POST'])
 def snacks():
-    supabase = get_db_connection()
     data = request.json
     srn = data.get('srn')
-    data2 = supabase.table('participant').select("snacks").eq("srn",srn).execute()
-    if data2.data and data2.data[0].get("snacks") is not None :
-        return {"srn":srn , "status": " already got snacks", "response ":data2.data}
-    else :
-        try:
-            response = supabase.table('participant').update({'snacks':"done"}).eq("srn",srn).execute()
-            return {"status":"done","response":response}
-        except Exception as e:
-            return {"status":"error","error":str(e)}
+    return handle_update(srn,"snacks")
 
 
 # BREAKFAST
 @app.route('/breakfast', methods = ['GET','POST'])
 def breakfast():
-    supabase = get_db_connection()
     data = request.json
     srn = data.get('srn')
-    data2 = supabase.table('participant').select("breakfast").eq("srn",srn).execute()
-    
-    if data2.data and data2.data[0].get("breakfast") is not None:
-        return {"srn":srn , "status": "has already done breakfast", "response ":data2.data}
-    else :
-        try:
-            response = supabase.table('participant').update({'breakfast':"done"}).eq("srn",srn).execute()
-            return {"status":"done","response":response}
-        except Exception as e:
-            return {"status":"error","error":str(e)}
+    return handle_update(srn,"breakfast")
+
+@app.route('/database' , methods = ['GET'])
+def database():
+    return show_all_data()
 
 
 app.debug = True
