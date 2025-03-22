@@ -22,14 +22,16 @@ def get_db_connection():
 def handle_update(srn, column):
     supabase = get_db_connection()
     data2 = supabase.table('participant').select(column).eq('srn',srn).execute()
-    if data2.data and data2.data[0].get(column) is not None :
+    if data2.data is None :
+        return {"srn":srn,"status":"error","response":"Given SRN not in database"}
+    elif data2.data and data2.data[0].get(column) is not None :
         return {"srn":srn, "status":"has already done", "response":data2.data}
     else :
         try :
             response = supabase.table('participant').update({column:"done"}).eq("srn",srn).execute()
-            return {"status":"done","response":response}
+            return {"srn":srn,"status":"done","response":response.data}
         except Exception as e:
-            return {"status":"error","error":str(e)}
+            return {"srn":srn,"status":"error","error":str(e)}
 
 def show_all_data():
     try :
