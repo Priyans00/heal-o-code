@@ -49,7 +49,21 @@ elif st.session_state.input_method == "Scan QR Code":
                 print(f"Error response: {response.status_code}, {response.text}")
 
 if st.session_state.response_data:
-    st.write("🔹 **Response Data:**", st.session_state.response_data)
+    st.write("🔹 **SRN:**", st.session_state.response_data["srn"])
+    st.write("🔹 **Response Data:**", st.session_state.response_data["status"])
+
+if st.button("View Database"):
+    response = requests.get(f"{API_URL}/database")
+    if response.status_code == 200:
+        database_data = response.json()
+        st.write("🔹 **Database Data:**")
+        if "data" in database_data:
+            st.table(database_data["data"])
+        else:
+            st.error("❌ No data found in the response.")
+    else:
+        st.error("❌ Error fetching database. Try again!")
+        print(f"Error response: {response.status_code}, {response.text}")
 
 if st.button("Finish"):
     st.session_state.clear()  

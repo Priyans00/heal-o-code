@@ -29,7 +29,7 @@ def handle_update(srn, column):
     else :
         try :
             response = supabase.table('participant').update({column:"done"}).eq("srn",srn).execute()
-            return {"srn":srn,"status":"done","response":response.data}
+            return {"srn":srn,"status":"not done before","response":response.data}
         except Exception as e:
             return {"srn":srn,"status":"error","error":str(e)}
 
