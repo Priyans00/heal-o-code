@@ -37,10 +37,10 @@ elif st.session_state.input_method == "Scan QR Code":
 
     if qr_data:  
         st.session_state.qr_data = qr_data
-        st.success(f"✅ Scanned QR Data: {qr_data}")
+        st.success(f"✅ Scanned QR Data: {qr_data["srn"]}")
 
         if st.button("Submit"):
-            response = requests.post(f"{API_URL}/{st.session_state.meal_type}", json={"srn": qr_data})
+            response = requests.post(f"{API_URL}/{st.session_state.meal_type}", json={"srn": qr_data["srn"]})
             if response.status_code == 200:
                 st.session_state.response_data = response.json()
                 st.success("✅ Response received!")
